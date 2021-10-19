@@ -4,6 +4,10 @@
 </head>
   <body>
     <h1>Log In</h1>
-    <p><b>UNDER CONSTRUCTION</b>: This page will contain the log in view</p>
+    <form action="{% url 'log_in' %}" method="post">
+      {% csrf_token %}
+      {{ form.as_p }} <!--puts each value on seperate line -->
+      <input type="submit" value="Log In">
+      </form>
   </body>
 </html>
