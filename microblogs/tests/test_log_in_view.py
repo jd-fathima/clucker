@@ -20,7 +20,7 @@ class LogInViewTestCase(TestCase, LogInTester):
         is_active = True,
     )
 
-    def test_sign_up_url(self):
+    def test_log_in_url(self):
         self.assertEqual(self.url, '/log_in/')
 
     def test_get_log_in(self):
