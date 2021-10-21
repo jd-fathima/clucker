@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate,login
 from django.shortcuts import redirect, render
 from .forms import SignUpForm, LogInForm
@@ -13,10 +14,12 @@ def log_in(request):
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)#checks the values
+            user = authenticate(username=username, password=password)#checks the values and checks if it is active too
             if user is not None: #have been given a user object
                 login(request, user)
                 return redirect('feed')
+            #add error message here
+            messages.add_message(request,messages.ERROR, "The credientials provided were invalid!!")
     form = LogInForm()
     return render(request, 'log_in.html', {'form': form})
 
