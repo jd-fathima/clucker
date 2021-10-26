@@ -5,12 +5,16 @@ from .forms import SignUpForm, LogInForm, PostForm
 
 
 # Create your views here.
-#display a Post
+def show_user(request):
+
+
+
 def user_list(request):
     User = get_user_model()
     list = User.objects.all()
     return render(request, 'user_list.html', {"list": list})
 
+#display a Post
 def feed(request):
     if request.method == 'POST':
         form = PostForm(request.POST)

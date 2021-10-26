@@ -22,6 +22,7 @@ urlpatterns = [
     path('', views.home, name = 'home'),
     path('feed/', views.feed,name='feed'),
     path('APP_URL/users', views.user_list,name='user_list'),
+    path('APP_URL/id', views.show_user,name='show_user'),
     path('post/', views.post,name='post'),
     path('log_in/', views.log_in,name='log_in'),
     path('log_out/', views.log_out,name='log_out'),
