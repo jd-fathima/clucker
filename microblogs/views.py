@@ -5,9 +5,8 @@ from .forms import SignUpForm, LogInForm, PostForm
 
 
 # Create your views here.
-def show_user(request):
-
-
+def show_user(request, user_id):
+    pass
 
 def user_list(request):
     User = get_user_model()
@@ -28,9 +27,10 @@ def post(request):
     if request.method == 'POST':
         form = PostForm(request.POST)
         form.printText()
+        return redirect('feed')
     else:
         form = PostForm()
-    return render(request, 'post.html',{'form': form})
+    return render(request, 'feed.html',{'form': form})
 
 def log_in(request):
     if request.method == 'POST':

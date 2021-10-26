@@ -11,7 +11,12 @@ class PostForm(forms.ModelForm):
         widgets = {'text':forms.Textarea()}
 
     def printText(self):
-        super.save(commit=True)
+        super().save(commit=False)
+        post = Post.objects.create_post(
+            self.cleaned_data.get('username'),
+            text = self.cleaned_data.get('text'),
+            created_at= self.cleaned_data.get('created_at'),
+        )
         text = self.cleaned_data.get('text')
         print(text)
 
