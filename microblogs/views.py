@@ -1,12 +1,32 @@
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.shortcuts import redirect, render
-from .forms import SignUpForm, LogInForm
+from .forms import SignUpForm, LogInForm, PostForm
+
 
 # Create your views here.
+#display a Post
+def user_list(request):
+    User = get_user_model()
+    list = User.objects.all()
+    return render(request, 'user_list.html', {"list": list})
 
 def feed(request):
-    return render(request, 'feed.html')
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            return redirect('feed')
+    else:
+        form = PostForm()
+    return render(request, 'feed.html',{'form': form})
+
+def post(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        form.printText()
+    else:
+        form = PostForm()
+    return render(request, 'post.html',{'form': form})
 
 def log_in(request):
     if request.method == 'POST':

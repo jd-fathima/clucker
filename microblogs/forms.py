@@ -1,15 +1,23 @@
+from django.utils import timezone
 from django import forms
 from django.core.validators import RegexValidator
-from .models import User
+from .models import User,Post
+from django.db import models
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['text']
+        widgets = {'text':forms.Textarea()}
+
+    def printText(self):
+        super.save(commit=True)
+        text = self.cleaned_data.get('text')
+        print(text)
 
 class LogInForm(forms.Form):
     username = forms.CharField(label="Username")
     password = forms.CharField(label="Password", widget=forms.PasswordInput())
-
-
-
-
-
 
 class SignUpForm(forms.ModelForm):
     class Meta:

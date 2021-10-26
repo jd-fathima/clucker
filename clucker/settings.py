@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.messages',#implemens flash messages messages that pop up on screen e.g NumericPasswordValidator 
+    'django.contrib.messages',#implemens flash messages messages that pop up on screen e.g NumericPasswordValidator
     'django.contrib.staticfiles',
     'microblogs',
 ]
@@ -127,3 +127,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #User model for authentication purposes
 AUTH_USER_MODEL = 'microblogs.User'
+POST_MODEL = 'microblogs.Post'
