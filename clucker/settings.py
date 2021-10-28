@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',#implemens flash messages messages that pop up on screen e.g NumericPasswordValidator
     'django.contrib.staticfiles',
     'microblogs',
+    'widget_tweaks'
 ]
 
 MIDDLEWARE = [
