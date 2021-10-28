@@ -1,10 +1,12 @@
-
 <html>
 <head>
   <title>Clucker </title>
 </head>
   <body>
-    <h1>User List</h1>
-    {% url 'show_user' id %}
+    <h1>User Item</h1>
+    The user information is:
+    {%for item in list%}
+        <li>{{item}}</li>
+    {% endfor %}
 </body>
 </html>

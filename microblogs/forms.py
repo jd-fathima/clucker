@@ -8,17 +8,34 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['text']
-        widgets = {'text':forms.Textarea()}
+        readonly_fields = ('created_at')
+        widgets = {
+        'text':forms.Textarea(),
+        'created_at':forms.DateTimeInput()
+        }
 
-    def printText(self):
-        super().save(commit=False)
-        post = Post.objects.create_post(
-            self.cleaned_data.get('username'),
-            text = self.cleaned_data.get('text'),
-            created_at= self.cleaned_data.get('created_at'),
+    #def printText(self):
+        #pass
+        #super.save(commit=False)
+        # selfpost = Post.objects.create(
+        # author= request.user,
+        # text = self.cleaned_data.get('text'),
+        # created_at = date.time.now()
+        # )
+    #     # super.save(commit=False)
+    #     # post = Post.objects.create_user(
+    #     #     text = self.cleaned_data.get('text')
+    #     #     )
+    #     print("Hello")
+
+    def save(self, request):
+        super.save(commit=False)
+        selfpost = Post.objects.create(
+        author= request.user,
+        text = self.cleaned_data.get('text'),
+        created_at = date.time.now()
         )
-        text = self.cleaned_data.get('text')
-        print(text)
+        return selfpost
 
 class LogInForm(forms.Form):
     username = forms.CharField(label="Username")

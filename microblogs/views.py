@@ -5,8 +5,14 @@ from .forms import SignUpForm, LogInForm, PostForm
 
 
 # Create your views here.
-def show_user(request, user_id):
+
+def new_post(request):
     pass
+
+def show_user(request, user_id):
+    User = get_user_model()
+    list = User.objects.filter(id=user_id)
+    return render(request, 'show_user.html', {"list": list})
 
 def user_list(request):
     User = get_user_model()
@@ -18,6 +24,10 @@ def feed(request):
     if request.method == 'POST':
         form = PostForm(request.POST)
         if form.is_valid():
+            if request.user.is_authenticated:
+                post = form.save(request)
+            time = datetime.now()
+            print(time)
             return redirect('feed')
     else:
         form = PostForm()
@@ -26,11 +36,11 @@ def feed(request):
 def post(request):
     if request.method == 'POST':
         form = PostForm(request.POST)
-        form.printText()
-        return redirect('feed')
+        #form.printText()
+        return redirect('post')
     else:
         form = PostForm()
-    return render(request, 'feed.html',{'form': form})
+    return render(request, 'post.html',{'form': form})
 
 def log_in(request):
     if request.method == 'POST':
@@ -58,7 +68,7 @@ def sign_up(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
-            user = form.save()#record has been safe
+            user = form.save()#record has been saved
             login(request, user)
             return redirect('feed')
     else:
