@@ -3,9 +3,7 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.shortcuts import redirect, render
 from .forms import SignUpForm, LogInForm, PostForm
 
-
 # Create your views here.
-
 def new_post(request):
     pass
 
@@ -36,6 +34,7 @@ def feed(request):
 def post(request):
     if request.method == 'POST':
         form = PostForm(request.POST)
+        #post = form.save(request)
         #form.printText()
         return redirect('post')
     else:

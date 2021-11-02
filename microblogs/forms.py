@@ -3,6 +3,7 @@ from django import forms
 from django.core.validators import RegexValidator
 from .models import User,Post
 from django.db import models
+from datetime import datetime
 
 class PostForm(forms.ModelForm):
     class Meta:
@@ -14,28 +15,18 @@ class PostForm(forms.ModelForm):
         'created_at':forms.DateTimeInput()
         }
 
-    #def printText(self):
-        #pass
-        #super.save(commit=False)
-        # selfpost = Post.objects.create(
-        # author= request.user,
-        # text = self.cleaned_data.get('text'),
-        # created_at = date.time.now()
-        # )
-    #     # super.save(commit=False)
-    #     # post = Post.objects.create_user(
-    #     #     text = self.cleaned_data.get('text')
-    #     #     )
-    #     print("Hello")
-
     def save(self, request):
-        super.save(commit=False)
+        super().save(commit=False)
         selfpost = Post.objects.create(
         author= request.user,
         text = self.cleaned_data.get('text'),
-        created_at = date.time.now()
-        )
-        return selfpost
+        created_at = datetime.now())
+
+        username = request.user.username
+        text = self.cleaned_data.get('text')
+        time = datetime.now()
+        print(username, text, time)
+
 
 class LogInForm(forms.Form):
     username = forms.CharField(label="Username")

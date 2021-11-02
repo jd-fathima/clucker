@@ -1,7 +1,7 @@
 from django.core.validators import RegexValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django import forms
+#from django import forms
 # Create your models here.
 
 class User(AbstractUser):

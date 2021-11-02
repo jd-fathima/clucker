@@ -1,13 +1,14 @@
-
-<html>
-<head>
-  <title>Clucker </title>
-</head>
-  <body>
-    <h1>User List</h1>
-    The users are:
-    {%for item in list%}
-        <li>{{item}}</li>
-    {% endfor %}
-</body>
-</html>
+{% extends 'base_content.html' %}
+{% block content%}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-md-6 offset-md-3">
+      <h1>User List</h1>
+      The users are:
+      {%for item in list%}
+          <li>{{item}}</li>
+      {% endfor %}
+    </div>
+    </div>
+    </div>
+    {% endblock %}
