@@ -1,45 +1,16 @@
+"""Views of the microblogs app."""
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponseForbidden
 from django.shortcuts import redirect, render
-from .forms import SignUpForm, LogInForm, PostForm
+from .forms import LogInForm, PostForm, SignUpForm
+from .models import Post, User
 
-# Create your views here.
-def new_post(request):
-    pass
-
-def show_user(request, user_id):
-    User = get_user_model()
-    list = User.objects.filter(id=user_id)
-    return render(request, 'show_user.html', {"list": list})
-
-def user_list(request):
-    User = get_user_model()
-    list = User.objects.all()
-    return render(request, 'user_list.html', {"list": list})
-
-#display a Post
 def feed(request):
-    if request.method == 'POST':
-        form = PostForm(request.POST)
-        if form.is_valid():
-            if request.user.is_authenticated:
-                post = form.save(request)
-            time = datetime.now()
-            print(time)
-            return redirect('feed')
-    else:
-        form = PostForm()
-    return render(request, 'feed.html',{'form': form})
-
-def post(request):
-    if request.method == 'POST':
-        form = PostForm(request.POST)
-        #post = form.save(request)
-        #form.printText()
-        return redirect('post')
-    else:
-        form = PostForm()
-    return render(request, 'post.html',{'form': form})
+    form = PostForm()
+    return render(request, 'feed.html', {'form': form})
 
 def log_in(request):
     if request.method == 'POST':
@@ -47,12 +18,11 @@ def log_in(request):
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)#checks the values and checks if it is active too
-            if user is not None: #have been given a user object
+            user = authenticate(username=username, password=password)
+            if user is not None:
                 login(request, user)
                 return redirect('feed')
-            #add error message here
-            messages.add_message(request,messages.ERROR, "The credientials provided were invalid!!")
+        messages.add_message(request, messages.ERROR, "The credentials provided were invalid!")
     form = LogInForm()
     return render(request, 'log_in.html', {'form': form})
 
@@ -67,9 +37,38 @@ def sign_up(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
-            user = form.save()#record has been saved
+            user = form.save()
             login(request, user)
             return redirect('feed')
     else:
         form = SignUpForm()
     return render(request, 'sign_up.html', {'form': form})
+
+def show_user(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+    except ObjectDoesNotExist:
+        return redirect('user_list')
+    else:
+        return render(request, 'show_user.html', {'user': user})
+
+@login_required
+def user_list(request):
+    users = User.objects.all()
+    return render(request, 'user_list.html', {'users': users})
+
+def new_post(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            current_user = request.user
+            form = PostForm(request.POST)
+            if form.is_valid():
+                text = form.cleaned_data.get('text')
+                post = Post.objects.create(author=current_user, text=text)
+                return redirect('feed')
+            else:
+                return render(request, 'feed.html', {'form': form})
+        else:
+            return redirect('log_in')
+    else:
+        return HttpResponseForbidden()

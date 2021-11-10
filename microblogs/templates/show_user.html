@@ -1,12 +1,10 @@
-<html>
-<head>
-  <title>Clucker </title>
-</head>
-  <body>
-    <h1>User Item</h1>
-    The user information is:
-    {%for item in list%}
-        <li>{{item}}</li>
-    {% endfor %}
-</body>
-</html>
+{% extends 'base_content.html' %}
+{% block content %}
+<div class="container">
+  <div class="row content">
+    <div class="col-xs-12 col-lg-6 col-xl-4">
+      {% include 'partials/user_profile.html' %}
+    </div>
+  </div>
+</div>
+{% endblock %}
