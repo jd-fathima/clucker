@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.urls import reverse
 from microblogs.forms import SignUpForm
 from microblogs.models import User
-from .helpers import LogInTester
+from microblogs.tests.helpers import LogInTester
 
 
 class SignUpViewTestCase(TestCase, LogInTester):
@@ -46,7 +46,7 @@ class SignUpViewTestCase(TestCase, LogInTester):
         self.assertTrue(isinstance(form, SignUpForm))
         self.assertTrue(form.is_bound)
         self.assertFalse(self._is_logged_in())
-        
+
     def test_successful_sign_up(self):
         before_count = User.objects.count() #number of users before count
         response = self.client.post(self.url, self.form_input, follow=True)
