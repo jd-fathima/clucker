@@ -12,7 +12,9 @@ from .helpers import login_prohibited
 @login_required
 def feed(request):
     form = PostForm()
-    return render(request, 'feed.html', {'form': form})
+    current_user = request.user
+    post = Post.objects.filter(author=current_user)
+    return render(request, 'feed.html', {'form': form, 'posts': post})
 
 @login_prohibited
 def log_in(request):
