@@ -70,11 +70,15 @@ def show_user(request, user_id):
         user = User.objects.get(id=user_id)
         posts = Post.objects.filter(author=user)
         following = request.user.is_following(user)
+        followable = (request.user != user) 
     except ObjectDoesNotExist:
         return redirect('user_list')
     else:
         return render(request, 'show_user.html',
-        {'user': user, 'posts': posts, 'following': following}
+        {'user': user,
+        'posts': posts,
+        'following': following,
+        'followable':followable}
         ) # posts gets passed onto templates
 
 @login_required
