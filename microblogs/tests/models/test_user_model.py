@@ -149,7 +149,7 @@ class UserModelTestCase(TestCase):
         self.assertFalse(self.user.is_following(jane))
         self.assertFalse(jane.is_following(self.user))
 
-    def test_folow_counters(self):
+    def test_follow_counters(self):
         jane = User.objects.get(username='@janedoe')
         petra = User.objects.get(username='@petrapickles')
         peter = User.objects.get(username='@peterpickles')

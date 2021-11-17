@@ -11,10 +11,7 @@
       "password":"pbkdf2_sha256$260000$Zc3fkYdT0yoKMe7azntqOa$HMbrEEEB7zyHUu0xDdX1hNfdkPM6OSaugtTwKY3+PQg=",
       "is_active": true
     }
-  }
-]
-
-[
+  },
   {
     "model": "microblogs.user",
     "pk": 3,
@@ -27,10 +24,7 @@
       "password":"pbkdf2_sha256$260000$Zc3fkYdT0yoKMe7azntqOa$HMbrEEEB7zyHUu0xDdX1hNfdkPM6OSaugtTwKY3+PQg=",
       "is_active": true
     }
-  }
-]
-
-[
+  },
   {
     "model": "microblogs.user",
     "pk": 4,
