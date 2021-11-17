@@ -42,7 +42,13 @@ class User(AbstractUser):
         """Returns whether self follows the given user"""
         return False
 
+    def follower_count(self):
+        """Returns number of followers of self"""
+        return 0
 
+    def followee_count(self):
+        """Returns number of followees of self"""
+        return 0 
 
 
 
