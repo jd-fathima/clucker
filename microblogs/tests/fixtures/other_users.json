@@ -20,7 +20,7 @@
       "last_name": "Pickles",
       "username": "@petrapickles",
       "email":"petrapickles@example.org",
-      "bio": "Hello, I'm Jane Doe",
+      "bio": "Hello, I'm petrapickles",
       "password":"pbkdf2_sha256$260000$Zc3fkYdT0yoKMe7azntqOa$HMbrEEEB7zyHUu0xDdX1hNfdkPM6OSaugtTwKY3+PQg=",
       "is_active": true
     }
@@ -33,7 +33,7 @@
       "last_name": "Pickles",
       "username": "@peterpickles",
       "email":"peterpickles@example.org",
-      "bio": "Hello, I'm Jane Doe",
+      "bio": "Hello, I'm peterpickles",
       "password":"pbkdf2_sha256$260000$Zc3fkYdT0yoKMe7azntqOa$HMbrEEEB7zyHUu0xDdX1hNfdkPM6OSaugtTwKY3+PQg=",
       "is_active": true
     }
