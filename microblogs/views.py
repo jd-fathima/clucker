@@ -14,7 +14,18 @@ def feed(request):
     form = PostForm()
     current_user = request.user
     post = Post.objects.filter(author=current_user)
-    return render(request, 'feed.html', {'form': form, 'posts': post})
+    return render(request, 'feed.html', {'form': form, 'user':current_user, 'posts': post})
+
+@login_required
+def follow_toggle(request, user_id):
+    current_user = request.user
+    try:
+        followee = User.objects.get(id=user_id)
+        current_user.toggle_follow(followee)
+    except ObjectDoesNotExist:
+        return redirect('user_list')
+    else:
+        return redirect('show_user', user_id=user_id)
 
 @login_prohibited
 def log_in(request):
@@ -58,10 +69,17 @@ def show_user(request, user_id):
     try:
         user = User.objects.get(id=user_id)
         posts = Post.objects.filter(author=user)
+        following = request.user.is_following(user)
+        followable = (request.user != user)
     except ObjectDoesNotExist:
         return redirect('user_list')
     else:
-        return render(request, 'show_user.html', {'user': user, 'posts': posts}) # posts gets passed onto templates
+        return render(request, 'show_user.html',
+        {'user': user,
+        'posts': posts,
+        'following': following,
+        'followable':followable}
+        ) # posts gets passed onto templates
 
 @login_required
 def user_list(request):
