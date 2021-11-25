@@ -4,10 +4,12 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, Http404
 from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.generic import ListView
+from django.views.generic.detail import DetailView
 from .forms import LogInForm, PostForm, SignUpForm
 from .models import Post, User
 from .helpers import login_prohibited
@@ -76,25 +78,6 @@ class LogInView(View):
         return render(self.request, 'log_in.html', {'form': form, 'next': self.next})
 
 
-
-# @login_prohibited
-# def log_in(request):
-#     if request.method == 'POST':
-#         form = LogInForm(request.POST)
-#         if form.is_valid():
-#             username = form.cleaned_data.get('username')
-#             password = form.cleaned_data.get('password')
-#             user = authenticate(username=username, password=password)
-#             if user is not None:
-#                 login(request, user)
-#                 redirect_url = request.POST.get('next') or 'feed'
-#                 return redirect(redirect_url)
-#         messages.add_message(request, messages.ERROR, "The credentials provided were invalid!")
-#     else:
-#         next = request.GET.get('next') or ''
-#     form = LogInForm()
-#     return render(request, 'log_in.html', {'form': form, 'next': next})
-
 def log_out(request):
     logout(request)
     return redirect('home')
@@ -115,27 +98,49 @@ def sign_up(request):
         form = SignUpForm()
     return render(request, 'sign_up.html', {'form': form})
 
-@login_required
-def show_user(request, user_id):
-    try:
-        user = User.objects.get(id=user_id)
-        posts = Post.objects.filter(author=user)
-        following = request.user.is_following(user)
-        followable = (request.user != user)
-    except ObjectDoesNotExist:
-        return redirect('user_list')
-    else:
-        return render(request, 'show_user.html',
-        {'user': user,
-        'posts': posts,
-        'following': following,
-        'followable':followable}
-        ) # posts gets passed onto templates
 
-@login_required
-def user_list(request):
-    users = User.objects.all()
-    return render(request, 'user_list.html', {'users': users})
+class ShowUserView(DetailView):
+    """View that shows individual user details."""
+
+    model = User
+    template_name = 'show_user.html'
+    context_object_name = "user"
+    pk_url_kwarg = 'user_id'
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, *args, **kwargs):
+        """Generate content to be displayed in template."""
+
+        context = super().get_context_data(*args, **kwargs)
+        user = self.get_object() #object associated with detail view
+        context['posts'] = Post.objects.filter(author=user)
+        context['following'] = self.request.user.is_following(user)
+        context['followable'] = (self.request.user != user)
+        return context
+
+    def get(self, request, *args, **kwargs):
+        """Handle get request, and redirect to user_list if user_id invalid"""
+
+        try:
+            return super().get(request, *args, **kwargs)
+        except Http404:
+            return redirect('user_list')
+
+
+class UserListView(ListView):
+    """ View that shows a list of all users."""
+
+    model = User
+    template_name = "user_list.html"
+    context_object_name = "users"
+
+    @method_decorator(login_required)
+    def dispatch(self, request):
+        return super().dispatch(request)
+
 
 def new_post(request):
     if request.method == 'POST':
