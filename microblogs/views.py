@@ -1,10 +1,13 @@
 """Views of the microblogs app."""
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseForbidden
 from django.shortcuts import redirect, render
+from django.utils.decorators import method_decorator
+from django.views import View
 from .forms import LogInForm, PostForm, SignUpForm
 from .models import Post, User
 from .helpers import login_prohibited
@@ -40,22 +43,57 @@ def follow_toggle(request, user_id):
     else:
         return redirect('show_user', user_id=user_id)
 
-@login_prohibited
-def log_in(request):
-    if request.method == 'POST':
+class LogInView(View):
+    """View that handles log in """
+
+    http_method_names = ['get', 'post']
+
+    @method_decorator(login_prohibited)
+    def dispatch(self, request):
+        return super().dispatch(request)
+
+    def get(self, request):
+        """Display log in template"""
+
+        self.next = request.GET.get('next') or ''
+        return self.render()
+
+    def post(self, request):
+        """Handle log in attempt"""
         form = LogInForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                redirect_url = request.POST.get('next') or 'feed'
-                return redirect(redirect_url)
+        self.next = request.POST.get('next') or settings.REDIRECT_URL_WHEN_LOGGED_IN
+        user = form.get_user()
+        if user is not None:
+            login(request, user)
+            return redirect(self.next)
         messages.add_message(request, messages.ERROR, "The credentials provided were invalid!")
-    form = LogInForm()
-    next = request.GET.get('next') or ''
-    return render(request, 'log_in.html', {'form': form, 'next': next})
+        return self.render()
+
+    def render(self):
+        """Render log in templaate with blank log in form."""
+
+        form = LogInForm()
+        return render(self.request, 'log_in.html', {'form': form, 'next': self.next})
+
+
+
+# @login_prohibited
+# def log_in(request):
+#     if request.method == 'POST':
+#         form = LogInForm(request.POST)
+#         if form.is_valid():
+#             username = form.cleaned_data.get('username')
+#             password = form.cleaned_data.get('password')
+#             user = authenticate(username=username, password=password)
+#             if user is not None:
+#                 login(request, user)
+#                 redirect_url = request.POST.get('next') or 'feed'
+#                 return redirect(redirect_url)
+#         messages.add_message(request, messages.ERROR, "The credentials provided were invalid!")
+#     else:
+#         next = request.GET.get('next') or ''
+#     form = LogInForm()
+#     return render(request, 'log_in.html', {'form': form, 'next': next})
 
 def log_out(request):
     logout(request)
